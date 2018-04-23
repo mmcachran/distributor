@@ -23,6 +23,8 @@ function setup() {
 			if ( ! \Distributor\Utils\is_using_gutenberg() ) {
 				add_action( 'do_meta_boxes', __NAMESPACE__ . '\replace_revisions_meta_box', 10, 3 );
 				add_action( 'add_meta_boxes', __NAMESPACE__ . '\add_revisions_meta_box' );
+			} else {
+				add_action( 'add_meta_boxes', __NAMESPACE__ . '\add_gutenberg_meta_boxes' );
 			}
 
 			add_action( 'admin_init', __NAMESPACE__ . '\setup_columns' );
@@ -500,6 +502,48 @@ function enqueue_gutenberg_edit_scripts() {
 		'unlinkNonceUrl'       => wp_nonce_url( add_query_arg( 'action', 'unlink', admin_url( sprintf( $post_type_object->_edit_link, $post->ID ) ) ), "unlink-post_{$post->ID}" ),
 		'linkNonceUrl'         => wp_nonce_url( add_query_arg( 'action', 'link', admin_url( sprintf( $post_type_object->_edit_link, $post->ID ) ) ), "link-post_{$post->ID}" ),
 	] );
+}
+
+/**
+ * Add meta boxes for Gutenberg
+ *
+ * @param  WP_Post $post
+ * @since  1.2
+ */
+function add_gutenberg_meta_boxes( $post ) {
+	global $post;
+
+	$original_blog_id   = get_post_meta( $post->ID, 'dt_original_blog_id', true );
+	$original_post_id   = get_post_meta( $post->ID, 'dt_original_post_id', true );
+	$original_source_id = get_post_meta( $post->ID, 'dt_original_source_id', true );
+
+	if ( empty( $original_post_id ) || ( empty( $original_blog_id ) && empty( $original_source_id ) ) ) {
+		return;
+	}
+
+	$unlinked = (bool) get_post_meta( $post->ID, 'dt_unlinked', true );
+
+	if ( $unlinked ) {
+		return;
+	}
+
+	add_meta_box( 'dt-gutenberg-status', esc_html__( 'Distributor', 'distributor' ), __NAMESPACE__ . '\gutenberg_status_meta_box', $post->post_type );
+}
+
+/**
+ * Show Distributor status for Gutenberg
+ *
+ * @param  WP_Post $post
+ * @since  1.2
+ */
+function gutenberg_status_meta_box( $post ) {
+	$syndicate_time = get_post_meta( $post->ID, 'dt_syndicate_time', true );
+	?>
+
+	<p>
+		<?php esc_html_e( 'Distributed on: ', 'distributor' ); ?><strong><?php echo esc_html( date( 'M j, Y @ h:i', ( $syndicate_time + ( get_option( 'gmt_offset' ) * HOUR_IN_SECONDS ) ) ) ); ?></strong></span>
+	</p>
+	<?php
 }
 
 /**

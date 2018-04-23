@@ -13,8 +13,47 @@ function setup() {
 			add_action( 'admin_enqueue_scripts', __NAMESPACE__ . '\enqueue_post_scripts_styles' );
 			add_action( 'post_submitbox_misc_actions', __NAMESPACE__ . '\distributed_to' );
 			add_action( 'in_admin_header', __NAMESPACE__ . '\add_help_tab' );
+
+			if ( \Distributor\Utils\is_using_gutenberg() ) {
+				add_action( 'add_meta_boxes', __NAMESPACE__ . '\add_gutenberg_meta_boxes' );
+			}
 		}
 	);
+}
+
+/**
+ * Add meta boxes for Gutenberg
+ *
+ * @param  WP_Post $post
+ * @since  1.2
+ */
+function add_gutenberg_meta_boxes( $post ) {
+	global $post;
+
+	$connection_map = get_post_meta( $post->ID, 'dt_connection_map', true );
+
+	if ( empty( $connection_map ) ) {
+		return;
+	}
+
+	add_meta_box( 'dt-gutenberg-connections', esc_html__( 'Distributor', 'distributor' ), __NAMESPACE__ . '\gutenberg_connections_meta_box', $post->post_type );
+}
+
+/**
+ * Show Distributor connections for Gutenberg
+ *
+ * @param  WP_Post $post
+ * @since  1.2
+ */
+function gutenberg_connections_meta_box( $post ) {
+	$connection_map = get_post_meta( intval( $_GET['post'] ), 'dt_connection_map', true );
+	$total_connections = count( $connection_map['internal'] ) + count( $connection_map['external'] );
+	$post_type_object = get_post_type_object( get_post_type( $_GET['post'] ) );
+	?>
+	<p>
+		<?php printf( wp_kses_post( _n( 'Distributed to <strong>%d</strong> connection. If this %s is deleted, it could have ramifications across all those %s.', 'Distributed to <strong>%d</strong> connections', (int) $total_connections, 'distributor' ) ), (int) $total_connections, esc_html( strtolower( $post_type_object->labels->singular_name ) ), esc_html( strtolower( $post_type_object->labels->name ) ) ); ?>
+	</p>
+	<?php
 }
 
 /**
