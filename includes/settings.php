@@ -104,7 +104,11 @@ function update_notice( $plugin_file, $plugin_data, $status ) {
 	}
 	?>
 
-	<tr class="plugin-update-tr <?php if ( $active ) : ?>active<?php endif; ?>" id="distributor-update" >
+	<tr class="plugin-update-tr 
+	<?php
+	if ( $active ) :
+		?>
+		active<?php endif; ?>" id="distributor-update" >
 		<td colspan="3" class="plugin-update colspanchange">
 			<div class="update-message notice inline notice-warning notice-alt">
 				<p>
@@ -220,7 +224,15 @@ function license_key_callback() {
 	$license_key = ( ! empty( $settings['license_key'] ) ) ? $settings['license_key'] : '';
 	$email       = ( ! empty( $settings['email'] ) ) ? $settings['email'] : '';
 	?>
-	<div class="license-wrap <?php if ( true === $settings['valid_license'] ) : ?>valid<?php elseif ( false === $settings['valid_license'] ) : ?>invalid<?php endif; ?>">
+	<div class="license-wrap 
+	<?php
+	if ( true === $settings['valid_license'] ) :
+		?>
+		valid
+		<?php
+elseif ( false === $settings['valid_license'] ) :
+	?>
+		invalid<?php endif; ?>">
 		<input name="dt_settings[email]" type="email" placeholder="<?php esc_html_e( 'Email', 'distributor' ); ?>" value="<?php echo esc_attr( $email ); ?>"> <input name="dt_settings[license_key]" type="text" placeholder="<?php esc_html_e( 'Registration Key', 'distributor' ); ?>" value="<?php echo esc_attr( $license_key ); ?>">
 	</div>
 
@@ -330,7 +342,15 @@ function network_settings_screen() {
 				<tr>
 					<th scope="row"><?php esc_html_e( 'Registration Key', 'distributor' ); ?></th>
 					<td>
-						<div class="license-wrap <?php if ( true === $settings['valid_license'] ) : ?>valid<?php elseif ( false === $settings['valid_license'] ) : ?>invalid<?php endif; ?>">
+						<div class="license-wrap 
+						<?php
+						if ( true === $settings['valid_license'] ) :
+							?>
+							valid
+							<?php
+elseif ( false === $settings['valid_license'] ) :
+	?>
+							invalid<?php endif; ?>">
 							<input name="dt_settings[email]" type="email" placeholder="<?php esc_html_e( 'Email', 'distributor' ); ?>" value="<?php echo esc_attr( $email ); ?>"> <input name="dt_settings[license_key]" type="text" placeholder="<?php esc_html_e( 'Registration Key', 'distributor' ); ?>" value="<?php echo esc_attr( $license_key ); ?>">
 						</div>
 

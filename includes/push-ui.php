@@ -498,7 +498,11 @@ syndicated<?php endif; ?>" data-connection-type="internal" data-connection-id="<
 								 */
 								$as_draft = apply_filters( 'dt_allow_as_draft_distribute', $as_draft, $connection, $post );
 							?>
-							<button class="syndicate-button"><?php esc_html_e( 'Distribute', 'distributor' ); ?></button> <?php if ( $as_draft ) : ?><label class="as-draft" for="dt-as-draft"><input type="checkbox" id="dt-as-draft" checked> <?php esc_html_e( 'As draft', 'distributor' ); ?></label><?php endif; ?>
+							<button class="syndicate-button"><?php esc_html_e( 'Distribute', 'distributor' ); ?></button> 
+																			   <?php
+																				if ( $as_draft ) :
+																					?>
+								<label class="as-draft" for="dt-as-draft"><input type="checkbox" id="dt-as-draft" checked> <?php esc_html_e( 'As draft', 'distributor' ); ?></label><?php endif; ?>
 						</div>
 					</div>
 
